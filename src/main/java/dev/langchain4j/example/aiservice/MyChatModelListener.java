@@ -13,12 +13,12 @@ public class MyChatModelListener implements ChatModelListener {
 
     @Override
     public void onRequest(ChatModelRequestContext requestContext) {
-        log.info("onRequest(): {}", requestContext.request());
+        log.info("onRequest(): {}", requestContext.chatRequest());
     }
 
     @Override
     public void onResponse(ChatModelResponseContext responseContext) {
-        log.info("onResponse(): {}", responseContext.response());
+        log.info("onResponse(): {}", responseContext.chatResponse());
     }
 
     @Override

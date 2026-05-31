@@ -4,8 +4,8 @@ import dev.langchain4j.example.lowlevel.ChatModelController;
 import dev.langchain4j.memory.ChatMemory;
 import dev.langchain4j.memory.chat.ChatMemoryProvider;
 import dev.langchain4j.memory.chat.MessageWindowChatMemory;
-import dev.langchain4j.model.chat.ChatLanguageModel;
-import dev.langchain4j.model.chat.StreamingChatLanguageModel;
+import dev.langchain4j.model.chat.ChatModel;
+import dev.langchain4j.model.chat.StreamingChatModel;
 import dev.langchain4j.model.chat.listener.ChatModelListener;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,7 +19,7 @@ public class AssistantConfiguration {
     /**
      * This chat memory will be used by {@link Assistant} and {@link StreamingAssistant}
      */
-    @Bean
+    @Bean("chatMemoryProvider")
     //@Scope(SCOPE_PROTOTYPE) // Create a new bean instance everytime it is called and it also used for stateful calls.
     ChatMemoryProvider chatMemoryProvider() {
         return memoryId -> MessageWindowChatMemory.builder()
@@ -29,9 +29,9 @@ public class AssistantConfiguration {
     }
 
     /**
-     * This listener will be injected into every {@link ChatLanguageModel} and {@link StreamingChatLanguageModel}
+     * This listener will be injected into every {@link ChatModel} and {@link StreamingChatModel}
      * bean   found in the application context.
-     * It will listen for {@link ChatLanguageModel} in the {@link ChatModelController} as well as
+     * It will listen for {@link ChatModel} in the {@link ChatModelController} as well as
      * {@link Assistant} and {@link StreamingAssistant}.
      */
     @Bean

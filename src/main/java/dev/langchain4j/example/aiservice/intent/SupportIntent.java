@@ -1,6 +1,7 @@
 package dev.langchain4j.example.aiservice.intent;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import dev.langchain4j.example.ai_vocab.TicketReference;
 import dev.langchain4j.model.output.structured.Description;
 
 @Description("Structured intent extracted from a user's support chat message")
@@ -14,14 +15,14 @@ public record SupportIntent(
                 Use CHECK_TICKET_STATUS when the user asks about an existing ticket.
                 Use ASK_APPLICATION_NAME when the user asks what application or system this is.
                 Use GENERAL_CHAT for greetings, thanks, or normal conversation.
-                Use OUT_OF_SCOPE when the user clearly asks for something unsupported.
+                Use OUT_OF_SCOPE when the user clearly asks for something we this software can't do or is unsupported.
                 Use UNKNOWN when the intent is unclear.
                 """)
-        SupportAction action,
+        Action action,
 
         // Optional because not every message contains a ticket id.
         @Description("Support ticket id if present, for example TCK-1001. Null if not present.")
-        String ticketId,
+        java.lang.String ticketId,
 
         // Optional because users often forget priority.
         // UNKNOWN means the user did not specify priority.
@@ -30,7 +31,7 @@ public record SupportIntent(
 
         // Optional because only ticket creation messages need an issue summary.
         @Description("Short summary of the issue. Null if the user is not reporting an issue.")
-        String issueSummary,
+        java.lang.String issueSummary,
 
         // Required because backend workflow must know whether it is safe to continue.
         @JsonProperty(required = true)
@@ -39,6 +40,15 @@ public record SupportIntent(
 
         // Optional because we only need this when missingRequiredInformation is true.
         @Description("Question to ask the user when required information is missing. Null otherwise.")
-        String clarificationQuestion
+        java.lang.String clarificationQuestion,
+
+        @Description("""
+                If the user message contains ticket id use EXPLICIT_ID.
+                If the user asked about the last ticket he/she created use LAST_CREATED.
+                If the user asked about the last ticket he/she viewed use LAST_VIEWED.
+                If the user asked about recent or latest tickets use RECENT.
+                NONE if no ticket reference is found in the user message.
+                """)
+        TicketReference ticketReference
 ) {
 }

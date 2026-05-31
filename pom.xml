@@ -17,7 +17,7 @@
     <properties>
         <java.version>21</java.version>
         <!-- Define a unified framework version variable -->
-        <langchain4j.version>0.36.0</langchain4j.version>
+        <langchain4j.version>1.15.0</langchain4j.version>
     </properties>
 
     <dependencyManagement>
@@ -50,18 +50,20 @@
         <dependency>
             <groupId>dev.langchain4j</groupId>
             <artifactId>langchain4j-core</artifactId>
+            <version>${langchain4j.version}</version>
         </dependency>
 
         <!-- Azure Auto-Configuration Hooks -->
-        <dependency>
-            <groupId>dev.langchain4j</groupId>
-            <artifactId>langchain4j-azure-open-ai-spring-boot-starter</artifactId>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>dev.langchain4j</groupId>-->
+<!--            <artifactId>langchain4j-azure-open-ai-spring-boot-starter</artifactId>-->
+<!--        </dependency>-->
 
         <!-- Azure Client Runtime Connection Driver -->
         <dependency>
             <groupId>dev.langchain4j</groupId>
             <artifactId>langchain4j-azure-open-ai</artifactId>
+            <version>${langchain4j.version}</version>
         </dependency>
 
         <dependency>

@@ -77,6 +77,20 @@ public class TicketEntity {
         this.updatedAt = LocalDateTime.now();
     }
 
+    @Override
+    public String toString() {
+        return "TicketEntity{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", description='" + description + '\'' +
+                ", priority=" + priority +
+                ", status=" + status +
+                ", assignedTo='" + assignedTo + '\'' +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                '}';
+    }
+
     public Long getId() {
         return id;
     }

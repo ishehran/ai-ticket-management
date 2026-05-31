@@ -3,8 +3,13 @@ package dev.langchain4j.example.ai_service_mod;
 import dev.langchain4j.service.SystemMessage;
 import dev.langchain4j.service.UserMessage;
 import dev.langchain4j.service.spring.AiService;
+import dev.langchain4j.service.spring.AiServiceWiringMode;
 
-@AiService
+@AiService(
+        wiringMode = AiServiceWiringMode.EXPLICIT,
+        chatModel = "mainChatModel",
+        chatMemoryProvider = "chatMemoryProvider"
+)
 public interface TicketAssitant {
 
     @SystemMessage("You are a helpful assistant for managing support tickets. " +
