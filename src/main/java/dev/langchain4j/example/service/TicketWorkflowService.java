@@ -1,16 +1,12 @@
 package dev.langchain4j.example.service;
 
-import dev.langchain4j.example.ai_service_mod.GeneralAssistant;
-import dev.langchain4j.example.ai_service_mod.ResponseAssistant;
-import dev.langchain4j.example.ai_service_mod.TicketReadAssistant;
-import dev.langchain4j.example.ai_service_mod.TicketWriteAssistant;
+import dev.langchain4j.example.ai_service_mod.*;
 import dev.langchain4j.example.aiservice.Assistant;
 import dev.langchain4j.example.aiservice.intent.IntentExtractor;
 import dev.langchain4j.example.aiservice.intent.SupportIntent;
 import dev.langchain4j.example.dto.TicketDto;
 import dev.langchain4j.example.exception.InvalidTicketRequestException;
 import dev.langchain4j.example.exception.TicketNotFoundException;
-import dev.langchain4j.example.model.TicketEntity;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -25,6 +21,8 @@ public class TicketWorkflowService {
     private final TicketReadAssistant ticketReadAssistant;
     private final GeneralAssistant generalAssistant;
     private final AgentAuditService agentAuditService;
+    private final ConversationHistoryService conversationHistoryService;
+    private final KnowledgeAssistant knowledgeAssistant;
 
     public TicketWorkflowService(
             IntentExtractor intentExtractor,
@@ -35,7 +33,7 @@ public class TicketWorkflowService {
             TicketWriteAssistant ticketWriteAssistant,
             TicketReadAssistant ticketReadAssistant,
             GeneralAssistant generalAssistant,
-            AgentAuditService agentAuditService) {
+            AgentAuditService agentAuditService, ConversationHistoryService conversationHistoryService, KnowledgeAssistant knowledgeAssistant) {
         this.intentExtractor = intentExtractor;
         this.ticketService = ticketService;
         this.assistant = assistant;
@@ -45,6 +43,8 @@ public class TicketWorkflowService {
         this.ticketReadAssistant = ticketReadAssistant;
         this.generalAssistant = generalAssistant;
         this.agentAuditService = agentAuditService;
+        this.conversationHistoryService = conversationHistoryService;
+        this.knowledgeAssistant = knowledgeAssistant;
     }
 
     private String userConversationId;
@@ -70,6 +70,7 @@ public class TicketWorkflowService {
             return switch (intent.action()) {
                 case CREATE_TICKET -> ticketWriteAssistant.chat(conversationId, message);
                 case CHECK_TICKET_STATUS -> ticketReadAssistant.chat(conversationId, message);
+                case KNOWLEDGE_QUESTION -> knowledgeAssistant.answer(conversationId, message);
                 case ASK_APPLICATION_NAME, GENERAL_CHAT -> generalAssistant.chat(conversationId, message);
                 case OUT_OF_SCOPE -> "I can help with ticket creation and getting the status of it!!";
                 case UNKNOWN -> "I am not clear can you tell me with more detail.";
@@ -102,19 +103,27 @@ public class TicketWorkflowService {
         }
         userConversationId = conversationId;
         userMessage = message;
+
+        conversationHistoryService.saveUserMessage(conversationId, message);
+
         SupportIntent intent = intentExtractor.extract(message);
 
         if (intent.missingRequiredInformation()) {
             return intent.clarificationQuestion();
         }
 
-        return switch (intent.action()) {
+        String answer = switch (intent.action()) {
             case CREATE_TICKET -> createTicket(intent);
             case CHECK_TICKET_STATUS -> checkTicketStatus(intent);
+            case KNOWLEDGE_QUESTION -> knowledgeAssistant.answer(conversationId, message);
             case ASK_APPLICATION_NAME, GENERAL_CHAT -> assistant.chat(conversationId, message);
             case OUT_OF_SCOPE -> "I can help with ticket creation and getting the status of it!!";
             case UNKNOWN -> "I am not clear can you tell me in more detail.";
         };
+
+        conversationHistoryService.saveAssistantMessage(conversationId, answer);
+
+        return answer;
     }
 
     private String createTicket(SupportIntent intent) {

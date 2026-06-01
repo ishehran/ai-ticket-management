@@ -1,0 +1,24 @@
+Ticket Priority Guide
+
+LOW priority:
+Use LOW when the issue is minor, does not block work, and has a workaround.
+Examples:
+- UI alignment issue
+- Typo in label
+- Non-critical report formatting issue
+
+MEDIUM priority:
+Use MEDIUM when a user is blocked partially but business operations can continue.
+Examples:
+- One user cannot download a report
+- A dashboard widget is loading slowly
+- Invoice PDF generation fails for a small set of users
+
+HIGH priority:
+Use HIGH when business-critical functionality is broken, many users are affected, or there is no workaround.
+Examples:
+- Users cannot log in
+- Payment page is failing
+- Dashboard is blank for all users
+- Ticket creation is failing
+- Security-sensitive issue

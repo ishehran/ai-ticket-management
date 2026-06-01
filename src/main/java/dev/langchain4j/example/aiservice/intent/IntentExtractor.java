@@ -25,6 +25,7 @@ public interface IntentExtractor {
               set action to CHECK_TICKET_STATUS and missingRequiredInformation to true. If user has mentioned the ticket reference which is other than NONE then make the missingRequiredInformation to false.
             - If the user wants to create a ticket but does not describe the issue,
               set action to CREATE_TICKET and missingRequiredInformation to true.
+            - Use KNOWLEDGE_QUESTION when the user asks about support policy, ticket priority rules, SLA, troubleshooting guidance, or how the support process works.
             - If priority is not mentioned, use UNKNOWN.
             - Keep issueSummary short and practical.
             """)

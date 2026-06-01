@@ -1,0 +1,7 @@
+Ticket SLA Policy
+
+HIGH priority tickets should receive first response within 30 minutes.
+MEDIUM priority tickets should receive first response within 4 business hours.
+LOW priority tickets should receive first response within 2 business days.
+
+Tickets related to authentication, payment, data loss, or security should be reviewed urgently.
